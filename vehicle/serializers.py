@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from vehicle.models import Car, Moto, Milage
-from vehicle.services import convert_currencies
+# from vehicle.services import convert_currencies
 from vehicle.validators import TitleValidator
 
 
@@ -20,8 +20,8 @@ class CarSerializer(serializers.ModelSerializer):
         model = Car
         fields = '__all__'
 
-    def get_usd_price(self, instance):
-        return convert_currencies(instance.amount)
+    # def get_usd_price(self, instance):
+    #     return convert_currencies(instance.amount)
 
 
 class MotoSerializer(serializers.ModelSerializer):

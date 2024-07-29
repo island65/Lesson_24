@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
+from datetime import timedelta
 from pathlib import Path
+import eventlet
+eventlet.monkey_patch(all=False, socket=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +27,7 @@ SECRET_KEY = 'django-insecure-9kye!z&22okf-_hy23gk9!haa#c&ae1#wj+d&+1_0!#)z*$sa*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'vehicle',
     'drf_yasg',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -80,12 +84,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Lesson_24',
-        'USER': 'postgres',
-        'PASSWORD': '123123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("HOST"),
+        'PORT': os.getenv("PORT"),
     }
 }
 
@@ -110,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -139,16 +143,40 @@ REST_FRAMEWORK = {
     ]
 }
 
-# CORS_ALLOWED_ORIGINS = [
-#     '<https://localhost:8000>',  # Замените на адрес вашего фронтенд-сервера
-# ]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://read-and-write.example.com", #  Замените на адрес вашего фронтенд-сервера
-    # и добавьте адрес бэкенд-сервера
+CORS_ALLOWED_ORIGINS = [
+    '<https://localhost:8000>',  # Замените на адрес вашего фронтенд-сервера
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False
+# CSRF_TRUSTED_ORIGINS = [
+#     # "https://read-and-write.example.com", #  Замените на адрес вашего фронтенд-сервера
+#     # и добавьте адрес бэкенд-сервера
+# ]
 
-CUR_API_URL = 'https://api.currencyapi.com/'
-CUR_API_KEY = 'cur_live_67p2ZyfyvssNjzKrrVZRRQBhaagFrSZONIucrfM0'
+# CORS_ALLOW_ALL_ORIGINS = False
+#
+# CUR_API_URL = 'https://api.currencyapi.com/'
+# CUR_API_KEY = 'cur_live_67p2ZyfyvssNjzKrrVZRRQBhaagFrSZONIucrfM0'
+#
+# # Настройки для Celery
+#
+# # URL-адрес брокера сообщений
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+#
+# # URL-адрес брокера результатов, также Redis
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+#
+# # # Часовой пояс для работы Celery
+# # CELERY_TIMEZONE = "Australia/Tasmania"
+#
+# # # Флаг отслеживания выполнения задач
+# # CELERY_TASK_TRACK_STARTED = True
+# #
+# # # Максимальное время на выполнение задачи
+# # CELERY_TASK_TIME_LIMIT = 30 * 60
+#
+# CELERY_BEAT_SCHEDULE = {
+#     'task-name': {
+#         'task': 'myapp.tasks.my_task',  # Путь к задаче
+#         'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
+#     },
+# }
